@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       { hostname: "cdn.sanity.io" }, // for Phase 5 — Sanity CMS images
     ],
   },
+  output: 'standalone',
 };
 
 export default withNextIntl(nextConfig);
