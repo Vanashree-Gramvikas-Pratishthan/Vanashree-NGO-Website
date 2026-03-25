@@ -1,9 +1,7 @@
 /** @type {import('postcss-load-config').Config} */
-const config = {
+export default {
   plugins: {
     '@tailwindcss/postcss': {},  // ← NEW syntax for Next.js 16
     autoprefixer: {},
   },
 }
-
-module.exports = config
