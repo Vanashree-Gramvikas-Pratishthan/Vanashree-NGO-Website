@@ -2,9 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@vanashree/ui": ["../../packages/ui/src/index.ts"],
-      "@vanashree/ui/*": ["../../packages/ui/src/*"]
+      "@/*": ["./*"],      
     }
   }
 }

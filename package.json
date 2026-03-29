@@ -14,7 +14,8 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint"
+  },
+  "dependencies": {
+    "vanashree-ui": "^1.0.0"
   }
 }
-
-

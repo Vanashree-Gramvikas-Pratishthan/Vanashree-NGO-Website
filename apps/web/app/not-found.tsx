@@ -1,4 +1,4 @@
-import { Button } from '@vanashree/ui/button'
+import { Button } from 'vanashree-ui/button'
 import Link from 'next/link'
 import { IconTree, IconArrowLeft, IconHome } from '@tabler/icons-react'
 

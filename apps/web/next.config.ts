@@ -7,13 +7,13 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
+    qualities: [75, 85],  // Add this line
     formats: ["image/avif", "image/webp"],
     remotePatterns: [{ hostname: "cdn.sanity.io" }],
   },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@vanashree/ui': path.resolve(__dirname, '../../packages/ui/dist/index.js'),
     };
     return config;
   },
