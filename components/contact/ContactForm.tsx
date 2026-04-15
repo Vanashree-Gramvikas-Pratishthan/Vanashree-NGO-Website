@@ -17,7 +17,7 @@ export function ContactForm({ toEmail }: ContactFormProps) {
   const [form, setForm] = useState({
     name: '', email: '', subject: '', message: '',
     location: '', skills: '', experience: '', education: '',
-    phone: '', preferredRole: '', website: '',
+    phone: '', preferredRole: '', availability: '', website: '',
   })
 
   const isVolunteer = form.subject === 'Volunteering Inquiry'
@@ -39,6 +39,7 @@ export function ContactForm({ toEmail }: ContactFormProps) {
         updated.education = ''
         updated.phone = ''
         updated.preferredRole = ''
+        updated.availability = ''
       }
       return updated
     })
@@ -73,6 +74,7 @@ export function ContactForm({ toEmail }: ContactFormProps) {
             education: form.education,
             phone: form.phone,
             preferredRole: form.preferredRole,
+            availability: form.availability,
           }),
         }),
       })
@@ -81,7 +83,7 @@ export function ContactForm({ toEmail }: ContactFormProps) {
 
       if (data.success) {
         setStatus('sent')
-        setForm({ name: '', email: '', subject: '', message: '', location: '', skills: '', experience: '', education: '', phone: '', preferredRole: '', website: '' })
+        setForm({ name: '', email: '', subject: '', message: '', location: '', skills: '', experience: '', education: '', phone: '', preferredRole: '', availability: '', website: '' })
         setCaptchaToken(null)
         setCaptchaKey(k => k + 1)
         setTimeout(() => setStatus('idle'), 5000)
@@ -216,6 +218,21 @@ export function ContactForm({ toEmail }: ContactFormProps) {
                 <option value="" disabled>Select a role...</option>
                 <option value="Technical">Technical</option>
                 <option value="Non-technical">Non-technical</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-forest mb-1.5 uppercase tracking-wide">Availability</label>
+              <select
+                name="availability"
+                required
+                value={form.availability}
+                onChange={handleChange}
+                className={inputClass}
+              >
+                <option value="" disabled>How often can you volunteer?</option>
+                <option value="One-time">One-time</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
               </select>
             </div>
           </div>

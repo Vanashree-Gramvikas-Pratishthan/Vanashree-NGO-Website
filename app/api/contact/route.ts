@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     const isVolunteer = VOLUNTEER_SUBJECTS.includes(subject)
 
     if (isVolunteer) {
-      const volunteerFields = ['phone', 'location', 'preferredRole', 'skills', 'education', 'experience']
+      const volunteerFields = ['phone', 'location', 'preferredRole', 'skills', 'education', 'experience', 'availability']
       for (const field of volunteerFields) {
         if (!validateString(body[field])) {
           return NextResponse.json(
@@ -139,8 +139,12 @@ export async function POST(request: NextRequest) {
       web3formsPayload.skills = body.skills.trim()
       web3formsPayload.education = body.education.trim()
       web3formsPayload.experience = body.experience.trim()
+      web3formsPayload.availability = body.availability.trim()
     }
 
+    // Gather headers to forward so Web3Forms knows it's a legitimate user request
+    const origin = request.headers.get('origin') || request.headers.get('referer') || 'https://vanashree-ngo.org'
+    
     // --- Forward to Web3Forms ---
     const web3Response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
@@ -148,6 +152,9 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'User-Agent': 'Vanashree-Website/1.0',
+        'Origin': origin,
+        'Referer': origin,
+        'X-Forwarded-For': ip,
       },
       body: JSON.stringify(web3formsPayload),
       cache: 'no-store',
