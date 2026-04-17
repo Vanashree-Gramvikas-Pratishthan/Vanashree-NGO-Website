@@ -97,6 +97,36 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // --- Verify hCaptcha token with hCaptcha's API ---
+    const hcaptchaSecret = process.env.HCAPTCHA_SECRET
+    if (!hcaptchaSecret) {
+      console.error('HCAPTCHA_SECRET is not set in environment variables.')
+      return NextResponse.json(
+        { success: false, message: 'Server configuration error. Please try again later.' },
+        { status: 500 }
+      )
+    }
+
+    const hcaptchaVerifyResponse = await fetch('https://api.hcaptcha.com/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: hcaptchaSecret,
+        response: captchaToken,
+        remoteip: ip,
+      }).toString(),
+    })
+
+    const hcaptchaResult = await hcaptchaVerifyResponse.json()
+
+    if (!hcaptchaResult.success) {
+      console.error('hCaptcha verification failed:', hcaptchaResult)
+      return NextResponse.json(
+        { success: false, message: 'Captcha verification failed. Please try again.' },
+        { status: 400 }
+      )
+    }
+
     // --- Validate volunteer fields if subject is volunteering ---
     const isVolunteer = VOLUNTEER_SUBJECTS.includes(subject)
 
@@ -122,14 +152,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const web3formsPayload: Record<string, string> = {
+    const web3formsPayload: Record<string, string | boolean> = {
       access_key: accessKey,
+      botcheck: false,  // We already verified captcha ourselves above
       name: name.trim(),
       email: email.trim(),
       subject: subject.trim(),
       message: message.trim(),
       from_name: 'Vanashree Website',
-      'h-captcha-response': captchaToken,
     }
 
     if (isVolunteer) {
@@ -142,19 +172,13 @@ export async function POST(request: NextRequest) {
       web3formsPayload.availability = body.availability.trim()
     }
 
-    // Gather headers to forward so Web3Forms knows it's a legitimate user request
-    const origin = request.headers.get('origin') || request.headers.get('referer') || 'https://vanashree-ngo.org'
-    
     // --- Forward to Web3Forms ---
     const web3Response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Vanashree-Website/1.0',
-        'Origin': origin,
-        'Referer': origin,
-        'X-Forwarded-For': ip,
+        'User-Agent': 'Mozilla/5.0 (compatible; Vanashree-Website/1.0)',
       },
       body: JSON.stringify(web3formsPayload),
       cache: 'no-store',

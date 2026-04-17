@@ -229,10 +229,9 @@ export function ContactForm({ toEmail }: ContactFormProps) {
                 onChange={handleChange}
                 className={inputClass}
               >
-                <option value="" disabled>How often can you volunteer?</option>
-                <option value="One-time">One-time</option>
-                <option value="Weekly">Weekly</option>
-                <option value="Monthly">Monthly</option>
+                <option value="" disabled>Select availability...</option>
+                <option value="On-site">On-site</option>
+                <option value="Remote">Remote</option>
               </select>
             </div>
           </div>
@@ -282,7 +281,7 @@ export function ContactForm({ toEmail }: ContactFormProps) {
       <div className="flex justify-center">
         <HCaptcha
           key={captchaKey}
-          sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || ''}
           onVerify={(token: string) => setCaptchaToken(token)}
           onExpire={() => setCaptchaToken(null)}
         />
